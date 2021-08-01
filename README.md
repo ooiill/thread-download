@@ -7,7 +7,7 @@ Multi thread download device by Shell
 * chmod +x td.sh
 * run it
     * ./td.sh --file picture --directory /Users/Leon/Download/abc/ --number 100
-    > follow the path/file name after a space.
+        > follow the path/file name after a space.
 
 ## Lisence
 * the param `picture` is the file `./picture`
