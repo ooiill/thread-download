@@ -13,7 +13,6 @@ Multi thread download device by Shell
 
 ## Lisence
 * the param `picture` is the file `./picture`
-* if you want  get the file like `./picture`, see [node-collect](https://github.com/jtleon/node-collect)
 * Download a lot of small files in the case, it is faster than the thunder
 
 ## Email
