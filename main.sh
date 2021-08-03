@@ -33,7 +33,7 @@ function thread()
     ###
 
     # 监听 ctrl+c 的信号 2
-    # 监听到时执行 exex ... 来关闭 5 与 fifo 文件的绑定
+    # 监听到时执行 exex ... 来关闭 fd5 与 fifo 文件的绑定
     # 关闭读/写绑定必须分开写，不能像绑定的时候使用 <> 符号
     trap "exec 5>&-;exec 5<&-;exit 0" 2
 
@@ -44,16 +44,16 @@ function thread()
     # 创建 fifo 文件
     mkfifo ${fileName}
     
-    # 将 5 与 fifo 文件绑定读写功能
+    # 将 fd5 与 fifo 文件绑定读写功能
     # 该值的取值范围为 0~9
     # 系统占用的 0，1，2 分别为 stdin，stdout，stderr
-    # 如果不绑定流 5 在读或写的时候可能会出现停滞现象
+    # 如果不绑定流 fd5 在读或写的时候可能会出现停滞现象
     exec 5<>${fileName}
     rm -f ${fileName}
 
     ###
 
-    # 向流 5 写入指定线程数个空行
+    # 向流 fd5 写入指定线程数个空行
     for((n=1;n<=${threadNum};n++))
     do
         echo >&5
@@ -64,7 +64,7 @@ function thread()
     # 执行任务
     for((i=1;i<=${missionNum};i++))
     do
-        # 从流 5 中读取一个空行
+        # 从流 fd5 中读取一个空行
         read -u5
         {
             # 执行相应的任务
@@ -84,7 +84,7 @@ function thread()
     # 等待后台的这批任务全部执行完成
     wait
 
-    # 关闭文件流 5 的读/写绑定
+    # 关闭文件流 fd5 的读/写绑定
     exec 5>&-
     exec 5<&-
 }
@@ -116,7 +116,7 @@ function download()
     # 公共参数
     # -t 重试次数，-T 超时时长，-c 断点续传，-q 静默下载
     # common="-t 3 -T 120 -cq"
-    common="-cq${referer}"
+    common="--no-check-certificate --user-agent=\"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6\" -cq${referer}"
 
     # 自动重命名
     if [ "${saveDirectory}" == "auto" ]
@@ -221,6 +221,6 @@ missionNum=`expr ${missionNum} + 1`
 thread "download ${file} ${directory} ${referer}" ${missionNum} ${number}
 
 # USE
-# ./td.sh --file picture --directory ~/Download/abc/ --number 100
+# ./main.sh --file picture --directory ~/Download/abc/ --number 100
 
 # -- eof --
